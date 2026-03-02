@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Read.ly – Library System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-row">
+      <div class="logo-icon">
+        <!-- book icon -->
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+      </div>
+      <span class="logo-name">Read.ly</span>
+    </div>
+    <div class="user-id" id="sidebarUserId">AD0001</div>
+  </div>
+
+  <nav class="nav-links">
+    <!-- Dashboard nav item -->
+    <div class="nav-item active" data-page="dashboard">
+      <img src="pic.png">
+      Dashboard
+    </div>
+
+    <!-- Manage Books nav item -->
+    <div class="nav-item" data-page="manage-books">
+      <img src="pic.png">
+      Manage Books
+    </div>
+
+    <!-- Borrow Book nav item -->
+    <div class="nav-item" data-page="borrow-book">
+      <img src="pic.png">
+      Borrow Book
+    </div>
+
+    <!-- Return Book nav item -->
+    <div class="nav-item" data-page="return-book">
+      <img src="pic.png">
+      Return Book
+    </div>
+
+    <!-- Transactions nav item -->
+    <div class="nav-item" data-page="transactions">
+      <img src="pic.png">
+      Transactions
+    </div>
+  </nav>
+
+  <div class="sidebar-logout">
+    <button class="btn-logout">Logout</button>
+    <button onclick="resetAllData()" style="width:100%;background:none;border:1px dashed #ccc;border-radius:6px;padding:7px;font-size:11px;color:#999;cursor:pointer;font-family:inherit;margin-top:8px;">🔄 Reset Test Data</button>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+  <!-- ===== DASHBOARD PAGE ===== -->
+  <div class="page active" id="page-dashboard">
+    <div class="topbar">
+      <h2>Dashboard</h2>
+      <div class="avatar">A</div>
+    </div>
+    <div class="page-title" id="welcome-title">Welcome back, Admin User!</div>
+
+    <!-- stat cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon">
+            <!-- books icon -->
+           <img src="book.png">
+          </div>
+          <div class="stat-num" id="stat-total">0</div>
+        </div>
+        <div class="stat-label">Total Books</div>
+        <a class="stat-link" data-page="manage-books">View Details →</a>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon">
+            <!-- check icon -->
+            <img src="book.png">
+          </div>
+          <div class="stat-num" id="stat-available">0</div>
+        </div>
+        <div class="stat-label">Available Books</div>
+        <a class="stat-link" data-page="manage-books">View Details →</a>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon">
+            <!-- clock icon -->
+            <img src="book.png">
+          </div>
+          <div class="stat-num" id="stat-active">0</div>
+        </div>
+        <div class="stat-label">Active Borrows</div>
+        <a class="stat-link" data-page="transactions">View Details →</a>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-top">
+          <div class="stat-icon">
+            <!-- warning icon -->
+            <img src="book.png">
+          </div>
+          <div class="stat-num" id="stat-overdue">0</div>
+        </div>
+        <div class="stat-label">Overdue</div>
+        <a class="stat-link" data-page="transactions">View Details →</a>
+      </div>
+    </div>
+
+    <!-- book list preview -->
+    <div class="section-header">
+      <div class="section-title">Book List</div>
+      <span class="view-all" data-page="manage-books">View All</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Book Title</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>Available Copies</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="dashboard-book-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== MANAGE BOOKS PAGE ===== -->
+  <div class="page" id="page-manage-books">
+    <div class="topbar">
+      <h2>Manage Books</h2>
+      <div class="avatar">A</div>
+    </div>
+    <div class="page-title">Manage Books</div>
+
+    <div class="toolbar">
+      <input type="text" class="search-input" id="book-search" placeholder="Search books..." oninput="loadBookTable()"/>
+      <button class="btn-primary" onclick="openAddBookModal()">+ Add Book</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Book Title</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>ISBN</th>
+            <th>Total Copies</th>
+            <th>Available</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="books-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== BORROW BOOK PAGE ===== -->
+  <div class="page" id="page-borrow-book">
+    <div class="topbar">
+      <h2>Borrow Book</h2>
+      <div class="avatar">A</div>
+    </div>
+    <div class="page-title">Borrow a Book</div>
+
+    <div class="form-card">
+      <div class="form-title">Borrow Form</div>
+      <div class="form-group">
+        <label>Student ID</label>
+        <input type="text" id="borrow-studentId" placeholder="e.g. SD0001"/>
+      </div>
+      <div class="form-group">
+        <label>Select Book</label>
+        <select id="borrow-bookId">
+          <option value="">-- Choose a Book --</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Librarian ID</label>
+        <input type="text" id="borrow-librarianId" value="LB0001"/>
+      </div>
+      <button class="btn-primary" onclick="handleBorrowBook()">Confirm Borrow</button>
+    </div>
+  </div>
+
+  <!-- ===== RETURN BOOK PAGE ===== -->
+  <div class="page" id="page-return-book">
+    <div class="topbar">
+      <h2>Return Book</h2>
+      <div class="avatar">A</div>
+    </div>
+    <div class="page-title">Return a Book</div>
+
+    <div class="form-card">
+      <div class="form-title">Return Form</div>
+      <div class="form-group">
+        <label>Transaction ID</label>
+        <input type="text" id="return-txId" placeholder="e.g. TX0001"/>
+      </div>
+      <div class="form-group">
+        <label>Librarian ID</label>
+        <input type="text" id="return-librarianId" value="LB0001"/>
+      </div>
+      <button class="btn-primary" onclick="handleReturnBook()">Confirm Return</button>
+    </div>
+
+    <div style="margin-top: 28px;">
+      <div class="section-header">
+        <div class="section-title">Active Borrows</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>TX ID</th>
+              <th>Book ID</th>
+              <th>Student ID</th>
+              <th>Borrow Date</th>
+              <th>Due Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="active-tx-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TRANSACTIONS PAGE ===== -->
+  <div class="page" id="page-transactions">
+    <div class="topbar">
+      <h2>Transactions</h2>
+      <div class="avatar">A</div>
+    </div>
+    <div class="page-title">All Transactions</div>
+
+    <div class="toolbar">
+      <input type="text" class="search-input" id="tx-search" placeholder="Search transactions..." oninput="loadTransactionTable()"/>
+      <select id="tx-filter" onchange="loadTransactionTable()" style="padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px;">
+        <option value="all">All Status</option>
+        <option value="borrowed">Borrowed</option>
+        <option value="returned">Returned</option>
+        <option value="overdue">Overdue</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>TX ID</th>
+            <th>Book ID</th>
+            <th>Student ID</th>
+            <th>Librarian ID</th>
+            <th>Borrow Date</th>
+            <th>Due Date</th>
+            <th>Return Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="tx-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<!-- ===== BOOK ADD/EDIT MODAL ===== -->
+<div class="modal-overlay" id="book-modal">
+  <div class="modal-book" style="position:relative;">
+
+    <!-- sub modal: "are you sure you want to leave?" -->
+    <div class="sub-modal-overlay" id="leave-sub-modal">
+      <div class="sub-modal">
+        <img src="leave.svg">
+        <div class="sub-text">Are you sure you want to leave?</div>
+        <div class="sub-actions">
+          <button class="btn-keep" onclick="closeLeaveSubModal()">Keep Editing</button>
+          <button class="btn-discard" onclick="forceCloseBookModal()">Discard Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- sub modal: "are you sure you want to update?" -->
+    <div class="sub-modal-overlay" id="update-sub-modal">
+      <div class="sub-modal">
+        <img src="sure.jpg">
+        <div class="sub-text">Are you sure you want to update this book?</div>
+        <div class="sub-actions">
+          <button class="btn-keep" onclick="closeUpdateSubModal()">No</button>
+          <button class="btn-discard" style="background:#2980b9;" onclick="handleUpdateBook()">Yes, Save changes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- sub modal: "are you sure you want to add?" -->
+    <div class="sub-modal-overlay" id="add-sub-modal">
+      <div class="sub-modal">
+        <img src="sure.jpg">
+        <div class="sub-text">Are you sure you want to add this book?</div>
+        <div class="sub-actions">
+          <button class="btn-keep" onclick="closeAddSubModal()">No</button>
+          <button class="btn-discard" style="background:#2980b9;" onclick="handleAddBook()">Yes, Add Book</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- modal header -->
+    <div class="modal-header">
+      <span class="modal-title" id="book-modal-title">Add New Book</span>
+      <button class="modal-close-red" onclick="tryCloseBookModal()">✕</button>
+    </div>
+
+    <!-- form fields -->
+    <div class="form-group">
+      <label>Title</label>
+      <input type="text" id="modal-title" placeholder="Book title"/>
+    </div>
+    <div class="form-group">
+      <label>Author</label>
+      <input type="text" id="modal-author" placeholder="Author name"/>
+    </div>
+    <div class="form-group">
+      <label>Category</label>
+      <input type="text" id="modal-category" placeholder="e.g. Programming"/>
+    </div>
+    <div class="form-group">
+      <label>ISBN</label>
+      <input type="text" id="modal-isbn" placeholder="ISBN"/>
+    </div>
+    <div class="form-group">
+      <label>Total Copies</label>
+      <input type="number" id="modal-copies" value="1" min="1"/>
+    </div>
+    <input type="hidden" id="modal-book-id"/>
+
+    <div class="modal-actions">
+      <button class="btn-cancel-text" onclick="tryCloseBookModal()">Cancel</button>
+      <button class="btn-save" onclick="trySaveBook()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DELETE CONFIRM MODAL ===== -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal-small">
+    <div class="modal-header">
+      <button class="modal-close-gray" onclick="closeConfirmModal()">✕</button>
+    </div>
+
+    <!-- woman throwing book in trash (matches screenshot) -->
+    <div class="illus">
+    <img src="trash.png" width="350">
+    </div>
+
+    <div class="confirm-text">
+      Are you sure you want to delete this book?<br>
+      <span style="font-weight:400;font-size:12px;color:#888;">This action cannot be undone.</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-no" onclick="closeConfirmModal()">No</button>
+      <button class="btn-yes-red" onclick="confirmDelete()">Yes, Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-icon-wrap success" id="toast-icon-wrap">✓</div>
+  <span class="toast-msg" id="toast-msg"></span>
+  <button class="toast-close" onclick="hideToast()">✕</button>
+</div>
+
+<script src="librarian.js"></script>
+</body>
+</html>
