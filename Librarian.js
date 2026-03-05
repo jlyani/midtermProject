@@ -1,25 +1,13 @@
-// ==============================
-// STORAGE HELPERS
-// ==============================
-
-// save data to localStorage
 function saveData(key, data) {
     localStorage.setItem(key, JSON.stringify(data));
 }
 
-// load data from localStorage, return empty array if nothing there
 function loadData(key) {
     var d = localStorage.getItem(key);
     if (d == null) return [];
     return JSON.parse(d);
 }
 
-
-// ==============================
-// SEED DATA (dummy data for books and transactions)
-// ==============================
-
-// dummy librarian/user data
 var currentUser = {
     id: "LB0001",
     name: "Maria Santos",
@@ -36,13 +24,11 @@ function seedData() {
         saveData("elib_librarians", librarians);
     }
 
-    // load current user from saved librarians
     var savedLibrarians = loadData("elib_librarians");
     if (savedLibrarians.length > 0) {
         currentUser = savedLibrarians[0];
     }
 
-    // seed books and transactions if not yet saved
     if (localStorage.getItem("elib_books") && localStorage.getItem("elib_transactions")) {
         return;
     }
@@ -71,11 +57,6 @@ function seedData() {
     saveData("elib_books", books);
     saveData("elib_transactions", transactions);
 }
-
-
-// ==============================
-// BOOK HELPERS
-// ==============================
 
 function getAllBooks() {
     return loadData("elib_books");
@@ -120,7 +101,6 @@ function addBook(title, author, category, isbn, totalCopies, addedBy) {
     return newBook;
 }
 
-// delete a book from storage
 function deleteBook(bookId) {
     var books = getAllBooks();
     var idx = -1;
@@ -169,7 +149,6 @@ function updateBook(bookId, title, author, category, isbn, totalCopies) {
     saveAllBooks(books);
 }
 
-// decrement available copies when borrowing
 function decrementAvailable(bookId) {
     var books = getAllBooks();
 
@@ -187,7 +166,6 @@ function decrementAvailable(bookId) {
     throw new Error("Book not found.");
 }
 
-// increment available copies when returning
 function incrementAvailable(bookId) {
     var books = getAllBooks();
 
@@ -201,11 +179,6 @@ function incrementAvailable(bookId) {
         }
     }
 }
-
-
-// ==============================
-// TRANSACTION HELPERS
-// ==============================
 
 function getAllTransactions() {
     return loadData("elib_transactions");
@@ -225,7 +198,6 @@ function generateTxId(txs) {
     return prefix + n;
 }
 
-// borrow a book
 function borrowBook(bookId, studentId, librarianId) {
     var txs = getAllTransactions();
 
@@ -280,11 +252,6 @@ function returnBook(txId, librarianId) {
     throw new Error("Transaction not found.");
 }
 
-
-// ==============================
-// NAVIGATION
-// ==============================
-
 function navigateTo(pageId) {
     // hide all pages
     var pages = document.querySelectorAll('.page');
@@ -322,10 +289,6 @@ for (var i = 0; i < allNavItems.length; i++) {
 }
 
 
-// ==============================
-// DASHBOARD
-// ==============================
-
 function loadDashboardStats() {
     // update sidebar and welcome text with current user info
     document.getElementById('sidebarUserId').textContent = currentUser.id || 'LB0001';
@@ -334,7 +297,6 @@ function loadDashboardStats() {
     var books = getAllBooks();
     var txs = getAllTransactions();
 
-    // count stats
     var totalBooks = books.length;
     var availableBooks = 0;
     for (var i = 0; i < books.length; i++) {
@@ -353,7 +315,6 @@ function loadDashboardStats() {
     document.getElementById('stat-active').textContent = activeBorrows;
     document.getElementById('stat-overdue').textContent = overdue;
 
-    // show first 5 books in the preview table
     var tbody = document.getElementById('dashboard-book-tbody');
     var preview = books.slice(0, 5);
 
@@ -379,11 +340,6 @@ function loadDashboardStats() {
     }
     tbody.innerHTML = rows;
 }
-
-
-// ==============================
-// MANAGE BOOKS TABLE
-// ==============================
 
 function loadBookTable() {
     var books = getAllBooks();
@@ -449,11 +405,6 @@ function getEmptyStateHTML(page) {
     '</div>';
 }
 
-
-// ==============================
-// BOOK MODAL
-// ==============================
-
 var editingBookId = null;
 var originalBookData = null;
 
@@ -518,7 +469,6 @@ function hasChanges() {
         return (t !== '' || a !== '' || c !== '' || isbn !== '');
     }
 
-    // in edit mode, compare to original values
     return (
         t !== originalBookData.title ||
         a !== originalBookData.author ||
@@ -566,14 +516,12 @@ function trySaveBook() {
     }
 
     if (editingBookId) {
-        // edit mode
         if (!hasChanges()) {
             // nothing changed
             document.getElementById('book-modal').classList.remove('open');
             showNotification('Action canceled. No changes saved.', 'warning');
             return;
         }
-        // show update confirmation
         document.getElementById('update-sub-modal').classList.add('open');
     } else {
         // add mode - show add confirmation
@@ -589,7 +537,6 @@ function closeAddSubModal() {
     document.getElementById('add-sub-modal').classList.remove('open');
 }
 
-// called when user clicks "Yes" in the add confirm sub modal
 function handleAddBook() {
     var title = document.getElementById('modal-title').value.trim();
     var author = document.getElementById('modal-author').value.trim();
@@ -609,7 +556,6 @@ function handleAddBook() {
     }
 }
 
-// called when user clicks "Yes" in the update confirm sub modal
 function handleUpdateBook() {
     var title = document.getElementById('modal-title').value.trim();
     var author = document.getElementById('modal-author').value.trim();
@@ -628,11 +574,6 @@ function handleUpdateBook() {
         showNotification(e.message, 'error');
     }
 }
-
-
-// ==============================
-// DELETE MODAL
-// ==============================
 
 var deletingBookId = null;
 
@@ -661,10 +602,6 @@ function confirmDelete() {
     }
 }
 
-
-// ==============================
-// BORROW BOOK
-// ==============================
 
 function loadBorrowForm() {
     var books = getAllBooks();
@@ -707,11 +644,6 @@ function handleBorrowBook() {
         showNotification(e.message, 'error');
     }
 }
-
-
-// ==============================
-// RETURN BOOK
-// ==============================
 
 function loadReturnForm() {
     var txs = getAllTransactions();
@@ -763,11 +695,6 @@ function handleReturnBook() {
         showNotification(e.message, 'error');
     }
 }
-
-
-// ==============================
-// TRANSACTIONS TABLE
-// ==============================
 
 function loadTransactionTable() {
     var txs = getAllTransactions();
@@ -825,12 +752,6 @@ function loadTransactionTable() {
     tbody.innerHTML = rows;
 }
 
-
-// ==============================
-// UTILITY FUNCTIONS
-// ==============================
-
-// format date nicely
 function formatDate(dateStr) {
     if (!dateStr) return '—';
     try {
@@ -841,7 +762,6 @@ function formatDate(dateStr) {
     }
 }
 
-// toast notification
 var toastTimer;
 
 function showNotification(msg, type) {
@@ -872,7 +792,6 @@ function hideToast() {
     document.getElementById('toast').className = 'toast';
 }
 
-// close modals when clicking the dark overlay behind them
 document.getElementById('book-modal').addEventListener('click', function(e) {
     if (e.target === this) tryCloseBookModal();
 });
@@ -882,30 +801,6 @@ document.getElementById('confirm-modal').addEventListener('click', function(e) {
 });
 
 
-// ==============================
-// RESET DATA (for testing)
-// ==============================
-
-function resetAllData() {
-    localStorage.removeItem("elib_books");
-    localStorage.removeItem("elib_transactions");
-    seedData();
-    loadDashboardStats();
-    showNotification("Data reset! All dummy books restored. 🎉", "success");
-}
-
-function resetAndReseed() {
-    localStorage.removeItem("elib_books");
-    localStorage.removeItem("elib_transactions");
-    seedData();
-    loadDashboardStats();
-    alert("Data reset! Books and transactions reloaded.");
-}
-
-
-// ==============================
-// START THE APP
-// ==============================
-
 seedData();
+
 loadDashboardStats();
