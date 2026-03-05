@@ -15,7 +15,6 @@ var currentUser = {
 };
 
 function seedData() {
-    // seed librarians if not yet saved
     if (!localStorage.getItem("elib_librarians")) {
         var librarians = [
             { id: "LB0001", name: "Maria Santos", email: "maria@elibrary.com", password: "lib123", role: "librarian" },
@@ -66,7 +65,6 @@ function saveAllBooks(books) {
     saveData("elib_books", books);
 }
 
-// generate next book ID like BK0001, BK0002...
 function generateBookId(books) {
     var prefix = "BK";
     var n = books.length + 1;
@@ -76,7 +74,6 @@ function generateBookId(books) {
     return prefix + n;
 }
 
-// add a new book to storage
 function addBook(title, author, category, isbn, totalCopies, addedBy) {
     if (!title || !author || !isbn) {
         throw new Error("Required fields are missing.");
@@ -114,7 +111,6 @@ function deleteBook(bookId) {
 
     if (idx === -1) throw new Error("Book not found.");
 
-    // cant delete if someone still has it borrowed
     if (books[idx].availableCopies < books[idx].totalCopies) {
         throw new Error("Cannot delete: this book has active borrows.");
     }
@@ -123,7 +119,6 @@ function deleteBook(bookId) {
     saveAllBooks(books);
 }
 
-// update an existing book
 function updateBook(bookId, title, author, category, isbn, totalCopies) {
     var books = getAllBooks();
     var book = null;
@@ -137,7 +132,6 @@ function updateBook(bookId, title, author, category, isbn, totalCopies) {
 
     if (!book) throw new Error("Book not found.");
 
-    // adjust available copies if total changed
     var diff = parseInt(totalCopies) - book.totalCopies;
     book.title = title.trim();
     book.author = author.trim();
@@ -188,7 +182,6 @@ function saveAllTransactions(txs) {
     saveData("elib_transactions", txs);
 }
 
-// generate next transaction ID like TX0001, TX0002...
 function generateTxId(txs) {
     var prefix = "TX";
     var n = txs.length + 1;
@@ -201,7 +194,6 @@ function generateTxId(txs) {
 function borrowBook(bookId, studentId, librarianId) {
     var txs = getAllTransactions();
 
-    // check if student already borrowed same book
     for (var i = 0; i < txs.length; i++) {
         if (txs[i].studentId === studentId && txs[i].bookId === bookId && txs[i].status === "borrowed") {
             throw new Error("Student already has an active borrow for this book.");
@@ -232,7 +224,6 @@ function borrowBook(bookId, studentId, librarianId) {
     return newTx;
 }
 
-// return a book
 function returnBook(txId, librarianId) {
     var txs = getAllTransactions();
 
@@ -253,26 +244,21 @@ function returnBook(txId, librarianId) {
 }
 
 function navigateTo(pageId) {
-    // hide all pages
     var pages = document.querySelectorAll('.page');
     for (var i = 0; i < pages.length; i++) {
         pages[i].classList.remove('active');
     }
 
-    // remove active from all nav items
     var navItems = document.querySelectorAll('.nav-item');
     for (var i = 0; i < navItems.length; i++) {
         navItems[i].classList.remove('active');
     }
 
-    // show the target page
     document.getElementById('page-' + pageId).classList.add('active');
 
-    // highlight the nav item
     var targetNav = document.querySelector('[data-page="' + pageId + '"]');
     if (targetNav) targetNav.classList.add('active');
 
-    // load data for the page we're going to
     if (pageId === 'dashboard')     loadDashboardStats();
     if (pageId === 'manage-books')  loadBookTable();
     if (pageId === 'borrow-book')   loadBorrowForm();
@@ -280,7 +266,6 @@ function navigateTo(pageId) {
     if (pageId === 'transactions')  loadTransactionTable();
 }
 
-// attach click events to all nav items and stat links
 var allNavItems = document.querySelectorAll('[data-page]');
 for (var i = 0; i < allNavItems.length; i++) {
     allNavItems[i].addEventListener('click', function() {
@@ -288,9 +273,7 @@ for (var i = 0; i < allNavItems.length; i++) {
     });
 }
 
-
 function loadDashboardStats() {
-    // update sidebar and welcome text with current user info
     document.getElementById('sidebarUserId').textContent = currentUser.id || 'LB0001';
     document.getElementById('welcome-title').textContent = 'Welcome back, ' + (currentUser.name || 'Maria Santos') + '!';
 
@@ -343,8 +326,6 @@ function loadDashboardStats() {
 
 function loadBookTable() {
     var books = getAllBooks();
-
-    // filter by search if there's a search query
     var searchInput = document.getElementById('book-search');
     var query = searchInput ? searchInput.value.toLowerCase() : '';
 
@@ -388,7 +369,6 @@ function loadBookTable() {
     tbody.innerHTML = rows;
 }
 
-// empty state HTML
 function getEmptyStateHTML(page) {
     var btnAction = page === 'dashboard'
         ? "navigateTo('manage-books');openAddBookModal();"
@@ -437,7 +417,6 @@ function openEditBookModal(bookId) {
 
     editingBookId = bookId;
 
-    // save original values so we can detect if anything changed
     originalBookData = {
         title: book.title,
         author: book.author,
@@ -456,7 +435,6 @@ function openEditBookModal(bookId) {
     document.getElementById('book-modal').classList.add('open');
 }
 
-// check if user changed anything
 function hasChanges() {
     var t = document.getElementById('modal-title').value.trim();
     var a = document.getElementById('modal-author').value.trim();
@@ -464,7 +442,6 @@ function hasChanges() {
     var isbn = document.getElementById('modal-isbn').value.trim();
     var n = document.getElementById('modal-copies').value;
 
-    // in add mode, any typed value counts as a change
     if (!editingBookId) {
         return (t !== '' || a !== '' || c !== '' || isbn !== '');
     }
@@ -480,10 +457,8 @@ function hasChanges() {
 
 function tryCloseBookModal() {
     if (hasChanges()) {
-        // show "are you sure you want to leave?" sub modal
         document.getElementById('leave-sub-modal').classList.add('open');
     } else {
-        // nothing changed, just close
         document.getElementById('book-modal').classList.remove('open');
         if (editingBookId) {
             showNotification('Action canceled. No changes saved.', 'warning');
@@ -495,8 +470,7 @@ function closeLeaveSubModal() {
     document.getElementById('leave-sub-modal').classList.remove('open');
 }
 
-function forceCloseBookModal() {
-    // close all sub modals and the main modal
+function forceCloseBookModal() {l
     document.getElementById('leave-sub-modal').classList.remove('open');
     document.getElementById('update-sub-modal').classList.remove('open');
     document.getElementById('add-sub-modal').classList.remove('open');
@@ -509,7 +483,6 @@ function trySaveBook() {
     var author = document.getElementById('modal-author').value.trim();
     var isbn = document.getElementById('modal-isbn').value.trim();
 
-    // validate required fields
     if (!title || !author || !isbn) {
         showNotification('Please fill in required fields (Title, Author, ISBN).', 'error');
         return;
@@ -517,14 +490,12 @@ function trySaveBook() {
 
     if (editingBookId) {
         if (!hasChanges()) {
-            // nothing changed
             document.getElementById('book-modal').classList.remove('open');
             showNotification('Action canceled. No changes saved.', 'warning');
             return;
         }
         document.getElementById('update-sub-modal').classList.add('open');
     } else {
-        // add mode - show add confirmation
         document.getElementById('add-sub-modal').classList.add('open');
     }
 }
@@ -698,12 +669,8 @@ function handleReturnBook() {
 
 function loadTransactionTable() {
     var txs = getAllTransactions();
-
-    // filter by search query
     var searchEl = document.getElementById('tx-search');
     var query = searchEl ? searchEl.value.toLowerCase() : '';
-
-    // filter by status
     var filterEl = document.getElementById('tx-filter');
     var filter = filterEl ? filterEl.value : 'all';
 
@@ -804,3 +771,4 @@ document.getElementById('confirm-modal').addEventListener('click', function(e) {
 seedData();
 
 loadDashboardStats();
+
