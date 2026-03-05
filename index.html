@@ -9,13 +9,11 @@
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sidebar-logo">
     <div class="logo-row">
       <div class="logo-icon">
-        <!-- book icon -->
-        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        <img src="book.png" style="width:16px;"> 
       </div>
       <span class="logo-name">Read.ly</span>
     </div>
@@ -23,31 +21,26 @@
   </div>
 
   <nav class="nav-links">
-    <!-- Dashboard nav item -->
     <div class="nav-item active" data-page="dashboard">
       <img src="pic.png">
       Dashboard
     </div>
 
-    <!-- Manage Books nav item -->
     <div class="nav-item" data-page="manage-books">
       <img src="pic.png">
       Manage Books
     </div>
 
-    <!-- Borrow Book nav item -->
     <div class="nav-item" data-page="borrow-book">
       <img src="pic.png">
       Borrow Book
     </div>
 
-    <!-- Return Book nav item -->
     <div class="nav-item" data-page="return-book">
       <img src="pic.png">
       Return Book
     </div>
 
-    <!-- Transactions nav item -->
     <div class="nav-item" data-page="transactions">
       <img src="pic.png">
       Transactions
@@ -60,10 +53,8 @@
   </div>
 </aside>
 
-<!-- MAIN CONTENT -->
 <main class="main">
 
-  <!-- ===== DASHBOARD PAGE ===== -->
   <div class="page active" id="page-dashboard">
     <div class="topbar">
       <h2>Dashboard</h2>
@@ -71,12 +62,10 @@
     </div>
     <div class="page-title" id="welcome-title">Welcome back, Admin User!</div>
 
-    <!-- stat cards -->
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-top">
           <div class="stat-icon">
-            <!-- books icon -->
            <img src="book.png">
           </div>
           <div class="stat-num" id="stat-total">0</div>
@@ -88,7 +77,6 @@
       <div class="stat-card">
         <div class="stat-top">
           <div class="stat-icon">
-            <!-- check icon -->
             <img src="book.png">
           </div>
           <div class="stat-num" id="stat-available">0</div>
@@ -112,7 +100,6 @@
       <div class="stat-card">
         <div class="stat-top">
           <div class="stat-icon">
-            <!-- warning icon -->
             <img src="book.png">
           </div>
           <div class="stat-num" id="stat-overdue">0</div>
@@ -122,7 +109,6 @@
       </div>
     </div>
 
-    <!-- book list preview -->
     <div class="section-header">
       <div class="section-title">Book List</div>
       <span class="view-all" data-page="manage-books">View All</span>
@@ -144,7 +130,6 @@
     </div>
   </div>
 
-  <!-- ===== MANAGE BOOKS PAGE ===== -->
   <div class="page" id="page-manage-books">
     <div class="topbar">
       <h2>Manage Books</h2>
@@ -176,7 +161,6 @@
     </div>
   </div>
 
-  <!-- ===== BORROW BOOK PAGE ===== -->
   <div class="page" id="page-borrow-book">
     <div class="topbar">
       <h2>Borrow Book</h2>
@@ -204,7 +188,6 @@
     </div>
   </div>
 
-  <!-- ===== RETURN BOOK PAGE ===== -->
   <div class="page" id="page-return-book">
     <div class="topbar">
       <h2>Return Book</h2>
@@ -247,7 +230,6 @@
     </div>
   </div>
 
-  <!-- ===== TRANSACTIONS PAGE ===== -->
   <div class="page" id="page-transactions">
     <div class="topbar">
       <h2>Transactions</h2>
@@ -286,11 +268,8 @@
 
 </main>
 
-<!-- ===== BOOK ADD/EDIT MODAL ===== -->
 <div class="modal-overlay" id="book-modal">
   <div class="modal-book" style="position:relative;">
-
-    <!-- sub modal: "are you sure you want to leave?" -->
     <div class="sub-modal-overlay" id="leave-sub-modal">
       <div class="sub-modal">
         <img src="leave.svg">
@@ -302,7 +281,6 @@
       </div>
     </div>
 
-    <!-- sub modal: "are you sure you want to update?" -->
     <div class="sub-modal-overlay" id="update-sub-modal">
       <div class="sub-modal">
         <img src="sure.jpg">
@@ -314,7 +292,6 @@
       </div>
     </div>
 
-    <!-- sub modal: "are you sure you want to add?" -->
     <div class="sub-modal-overlay" id="add-sub-modal">
       <div class="sub-modal">
         <img src="sure.jpg">
@@ -326,13 +303,11 @@
       </div>
     </div>
 
-    <!-- modal header -->
     <div class="modal-header">
       <span class="modal-title" id="book-modal-title">Add New Book</span>
       <button class="modal-close-red" onclick="tryCloseBookModal()">✕</button>
     </div>
 
-    <!-- form fields -->
     <div class="form-group">
       <label>Title</label>
       <input type="text" id="modal-title" placeholder="Book title"/>
@@ -362,14 +337,12 @@
   </div>
 </div>
 
-<!-- ===== DELETE CONFIRM MODAL ===== -->
 <div class="modal-overlay" id="confirm-modal">
   <div class="modal-small">
     <div class="modal-header">
       <button class="modal-close-gray" onclick="closeConfirmModal()">✕</button>
     </div>
 
-    <!-- woman throwing book in trash (matches screenshot) -->
     <div class="illus">
     <img src="trash.png" width="350">
     </div>
@@ -385,7 +358,6 @@
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast">
   <div class="toast-icon-wrap success" id="toast-icon-wrap">✓</div>
   <span class="toast-msg" id="toast-msg"></span>
